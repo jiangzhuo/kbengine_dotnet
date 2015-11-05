@@ -1,17 +1,18 @@
 ﻿namespace KBEngine
 {
-  	using UnityEngine; 
-	using System; 
-	using System.Collections; 
-	using System.Collections.Generic;
-	using System.Text;
+    //using UnityEngine;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Text;
     using System.Threading;
-	using System.Text.RegularExpressions;
-	
-	using MessageID = System.UInt16;
-	using MessageLength = System.UInt16;
-	
-	/*
+    using System.Text.RegularExpressions;
+
+    using MessageID = System.UInt16;
+    using MessageLength = System.UInt16;
+    using System.Numerics;
+
+    /*
 		这是KBEngine插件的核心模块
 		包括网络创建、持久化协议、entities的管理、以及引起对外可调用接口。
 		
@@ -22,7 +23,7 @@
 		http://www.kbengine.org/cn/docs/programming/clientsdkprogramming.html
 		http://www.kbengine.org/cn/docs/programming/kbe_message_format.html
 	*/
-	public class KBEngineApp
+    public class KBEngineApp
 	{
 		public static KBEngineApp app = null;
 		private NetworkInterface _networkInterface = null;
@@ -1823,13 +1824,13 @@
 				
 				Bundle bundle = new Bundle();
 				bundle.newMessage(Message.messages["Baseapp_onUpdateDataFromClient"]);
-				bundle.writeFloat(position.x);
-				bundle.writeFloat(position.y);
-				bundle.writeFloat(position.z);
+				bundle.writeFloat(position.X);
+				bundle.writeFloat(position.Y);
+				bundle.writeFloat(position.Z);
 
-				bundle.writeFloat((float)((double)direction.x / 360 * 6.283185307179586));
-				bundle.writeFloat((float)((double)direction.y / 360 * 6.283185307179586));
-				bundle.writeFloat((float)((double)direction.z / 360 * 6.283185307179586));
+				bundle.writeFloat((float)((double)direction.X / 360 * 6.283185307179586));
+				bundle.writeFloat((float)((double)direction.Y / 360 * 6.283185307179586));
+				bundle.writeFloat((float)((double)direction.Z / 360 * 6.283185307179586));
 				bundle.writeUint8((Byte)(playerEntity.isOnGound == true ? 1 : 0));
 				bundle.writeUint32(spaceID);
 				bundle.send(_networkInterface);
@@ -1974,15 +1975,15 @@
 		*/
 		public void Client_onUpdateBasePos(MemoryStream stream)
 		{
-			_entityServerPos.x = stream.readFloat();
-			_entityServerPos.y = stream.readFloat();
-			_entityServerPos.z = stream.readFloat();
+			_entityServerPos.X = stream.readFloat();
+			_entityServerPos.Y = stream.readFloat();
+			_entityServerPos.Z = stream.readFloat();
 		}
 		
 		public void Client_onUpdateBasePosXZ(MemoryStream stream)
 		{
-			_entityServerPos.x = stream.readFloat();
-			_entityServerPos.z = stream.readFloat();
+			_entityServerPos.X = stream.readFloat();
+			_entityServerPos.Z = stream.readFloat();
 		}
 		
 		public void Client_onUpdateData(MemoryStream stream)
@@ -2012,26 +2013,26 @@
 				return;
 			}
 			
-			entity.position.x = stream.readFloat();
-			entity.position.y = stream.readFloat();
-			entity.position.z = stream.readFloat();
+			entity.position.X = stream.readFloat();
+			entity.position.Y = stream.readFloat();
+			entity.position.Z = stream.readFloat();
 			
-			entity.direction.x = stream.readFloat();
-			entity.direction.y = stream.readFloat();
-			entity.direction.z = stream.readFloat();
+			entity.direction.X = stream.readFloat();
+			entity.direction.Y = stream.readFloat();
+			entity.direction.Z = stream.readFloat();
 			
 			Vector3 position = (Vector3)entity.getDefinedPropterty("position");
 			Vector3 direction = (Vector3)entity.getDefinedPropterty("direction");
-			Vector3 old_position = new Vector3(position.x, position.y, position.z);
-			Vector3 old_direction = new Vector3(direction.x, direction.y, direction.z);
+			Vector3 old_position = new Vector3(position.X, position.Y, position.Z);
+			Vector3 old_direction = new Vector3(direction.X, direction.Y, direction.Z);
 			
-			position.x = entity.position.x;
-			position.y = entity.position.y;
-			position.z = entity.position.z;
+			position.X = entity.position.X;
+			position.Y = entity.position.Y;
+			position.Z = entity.position.Z;
 			
-			direction.x = entity.direction.x;
-			direction.y = entity.direction.y;
-			direction.z = entity.direction.z;
+			direction.X = entity.direction.X;
+			direction.Y = entity.direction.Y;
+			direction.Z = entity.direction.Z;
 			
 			entity.setDefinedPropterty("position", position);
 			entity.setDefinedPropterty("direction", direction);
@@ -2117,7 +2118,7 @@
 			
 			Vector2 xz = stream.readPackXZ();
 			
-			_updateVolatileData(eid, xz[0], 0.0f, xz[1], KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, 1);
+			_updateVolatileData(eid, xz.X, 0.0f, xz.Y, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, 1);
 		}
 		
 		public void Client_onUpdateData_xz_ypr(MemoryStream stream)
@@ -2130,7 +2131,7 @@
 			SByte p = stream.readInt8();
 			SByte r = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], 0.0f, xz[1], y, p, r, 1);
+			_updateVolatileData(eid, xz.X, 0.0f, xz.Y, y, p, r, 1);
 		}
 		
 		public void Client_onUpdateData_xz_yp(MemoryStream stream)
@@ -2142,7 +2143,7 @@
 			SByte y = stream.readInt8();
 			SByte p = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], 0.0f, xz[1], y, p, KBEDATATYPE_BASE.KBE_FLT_MAX, 1);
+			_updateVolatileData(eid, xz.X, 0.0f, xz.Y, y, p, KBEDATATYPE_BASE.KBE_FLT_MAX, 1);
 		}
 		
 		public void Client_onUpdateData_xz_yr(MemoryStream stream)
@@ -2154,7 +2155,7 @@
 			SByte y = stream.readInt8();
 			SByte r = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], 0.0f, xz[1], y, KBEDATATYPE_BASE.KBE_FLT_MAX, r, 1);
+			_updateVolatileData(eid, xz.X, 0.0f, xz.Y, y, KBEDATATYPE_BASE.KBE_FLT_MAX, r, 1);
 		}
 		
 		public void Client_onUpdateData_xz_pr(MemoryStream stream)
@@ -2166,7 +2167,7 @@
 			SByte p = stream.readInt8();
 			SByte r = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], 0.0f, xz[1], KBEDATATYPE_BASE.KBE_FLT_MAX, p, r, 1);
+			_updateVolatileData(eid, xz.X, 0.0f, xz.Y, KBEDATATYPE_BASE.KBE_FLT_MAX, p, r, 1);
 		}
 		
 		public void Client_onUpdateData_xz_y(MemoryStream stream)
@@ -2174,7 +2175,7 @@
 			Int32 eid = getAoiEntityIDFromStream(stream);
 			Vector2 xz = stream.readPackXZ();
 			SByte yaw = stream.readInt8();
-			_updateVolatileData(eid, xz[0], 0.0f, xz[1], yaw, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, 1);
+			_updateVolatileData(eid, xz.X, 0.0f, xz.Y, yaw, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, 1);
 		}
 		
 		public void Client_onUpdateData_xz_p(MemoryStream stream)
@@ -2185,7 +2186,7 @@
 	
 			SByte p = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], 0.0f, xz[1], KBEDATATYPE_BASE.KBE_FLT_MAX, p, KBEDATATYPE_BASE.KBE_FLT_MAX, 1);
+			_updateVolatileData(eid, xz.X, 0.0f, xz.Y, KBEDATATYPE_BASE.KBE_FLT_MAX, p, KBEDATATYPE_BASE.KBE_FLT_MAX, 1);
 		}
 		
 		public void Client_onUpdateData_xz_r(MemoryStream stream)
@@ -2196,7 +2197,7 @@
 	
 			SByte r = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], 0.0f, xz[1], KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, r, 1);
+			_updateVolatileData(eid, xz.X, 0.0f, xz.Y, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, r, 1);
 		}
 		
 		public void Client_onUpdateData_xyz(MemoryStream stream)
@@ -2206,7 +2207,7 @@
 			Vector2 xz = stream.readPackXZ();
 			float y = stream.readPackY();
 			
-			_updateVolatileData(eid, xz[0], y, xz[1], KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, 0);
+			_updateVolatileData(eid, xz.X, y, xz.Y, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, 0);
 		}
 		
 		public void Client_onUpdateData_xyz_ypr(MemoryStream stream)
@@ -2220,7 +2221,7 @@
 			SByte p = stream.readInt8();
 			SByte r = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], y, xz[1], yaw, p, r, 0);
+			_updateVolatileData(eid, xz.X, y, xz.Y, yaw, p, r, 0);
 		}
 		
 		public void Client_onUpdateData_xyz_yp(MemoryStream stream)
@@ -2233,7 +2234,7 @@
 			SByte yaw = stream.readInt8();
 			SByte p = stream.readInt8();
 
-			_updateVolatileData(eid, xz[0], y, xz[1], yaw, p, KBEDATATYPE_BASE.KBE_FLT_MAX, 0);
+			_updateVolatileData(eid, xz.X, y, xz.Y, yaw, p, KBEDATATYPE_BASE.KBE_FLT_MAX, 0);
 		}
 		
 		public void Client_onUpdateData_xyz_yr(MemoryStream stream)
@@ -2246,7 +2247,7 @@
 			SByte yaw = stream.readInt8();
 			SByte r = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], y, xz[1], yaw, KBEDATATYPE_BASE.KBE_FLT_MAX, r, 0);
+			_updateVolatileData(eid, xz.X, y, xz.Y, yaw, KBEDATATYPE_BASE.KBE_FLT_MAX, r, 0);
 		}
 		
 		public void Client_onUpdateData_xyz_pr(MemoryStream stream)
@@ -2259,7 +2260,7 @@
 			SByte p = stream.readInt8();
 			SByte r = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], y, xz[1], KBEDATATYPE_BASE.KBE_FLT_MAX, p, r, 0);
+			_updateVolatileData(eid, xz.X, y, xz.Y, KBEDATATYPE_BASE.KBE_FLT_MAX, p, r, 0);
 		}
 		
 		public void Client_onUpdateData_xyz_y(MemoryStream stream)
@@ -2270,7 +2271,7 @@
 			float y = stream.readPackY();
 			
 			SByte yaw = stream.readInt8();
-			_updateVolatileData(eid, xz[0], y, xz[1], yaw, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, 0);
+			_updateVolatileData(eid, xz.X, y, xz.Y, yaw, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, 0);
 		}
 		
 		public void Client_onUpdateData_xyz_p(MemoryStream stream)
@@ -2282,7 +2283,7 @@
 			
 			SByte p = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], y, xz[1], KBEDATATYPE_BASE.KBE_FLT_MAX, p, KBEDATATYPE_BASE.KBE_FLT_MAX, 0);
+			_updateVolatileData(eid, xz.X, y, xz.Y, KBEDATATYPE_BASE.KBE_FLT_MAX, p, KBEDATATYPE_BASE.KBE_FLT_MAX, 0);
 		}
 		
 		public void Client_onUpdateData_xyz_r(MemoryStream stream)
@@ -2294,7 +2295,7 @@
 			
 			SByte r = stream.readInt8();
 			
-			_updateVolatileData(eid, xz[0], y, xz[1], KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, r, 0);
+			_updateVolatileData(eid, xz.X, y, xz.Y, KBEDATATYPE_BASE.KBE_FLT_MAX, KBEDATATYPE_BASE.KBE_FLT_MAX, r, 0);
 		}
 		
 		private void _updateVolatileData(Int32 entityID, float x, float y, float z, float yaw, float pitch, float roll, sbyte isOnGound)
@@ -2321,19 +2322,19 @@
 			if(roll != KBEDATATYPE_BASE.KBE_FLT_MAX)
 			{
 				changeDirection = true;
-				entity.direction.x = KBEMath.int82angle((SByte)roll, false) * 360 / ((float)System.Math.PI * 2);
+				entity.direction.X = KBEMath.int82angle((SByte)roll, false) * 360 / ((float)System.Math.PI * 2);
 			}
 
 			if(pitch != KBEDATATYPE_BASE.KBE_FLT_MAX)
 			{
 				changeDirection = true;
-				entity.direction.y = KBEMath.int82angle((SByte)pitch, false) * 360 / ((float)System.Math.PI * 2);
+				entity.direction.Y = KBEMath.int82angle((SByte)pitch, false) * 360 / ((float)System.Math.PI * 2);
 			}
 			
 			if(yaw != KBEDATATYPE_BASE.KBE_FLT_MAX)
 			{
 				changeDirection = true;
-				entity.direction.z = KBEMath.int82angle((SByte)yaw, false) * 360 / ((float)System.Math.PI * 2);
+				entity.direction.Z = KBEMath.int82angle((SByte)yaw, false) * 360 / ((float)System.Math.PI * 2);
 			}
 			
 			bool done = false;
@@ -2345,7 +2346,7 @@
 			
 			if(!KBEMath.almostEqual(x + y + z, 0f, 0.000001f))
 			{
-				Vector3 pos = new Vector3(x + _entityServerPos.x, y + _entityServerPos.y, z + _entityServerPos.z);
+				Vector3 pos = new Vector3(x + _entityServerPos.X, y + _entityServerPos.Y, z + _entityServerPos.Z);
 				
 				entity.position = pos;
 				done = true;

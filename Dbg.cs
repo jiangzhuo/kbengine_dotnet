@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿//using UnityEngine;
 using KBEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace KBEngine
 {
@@ -32,25 +33,25 @@ namespace KBEngine
 		public static void INFO_MSG(object s)
 		{
 			if (DEBUGLEVEL.INFO >= debugLevel)
-				Debug.Log(getHead() + s);
+				Debug.WriteLine(getHead() + s);
 		}
 
 		public static void DEBUG_MSG(object s)
 		{
 			if (DEBUGLEVEL.DEBUG >= debugLevel)
-				Debug.Log(getHead() + s);
+				Debug.WriteLine(getHead() + s);
 		}
 
 		public static void WARNING_MSG(object s)
 		{
 			if (DEBUGLEVEL.WARNING >= debugLevel)
-				Debug.LogWarning(getHead() + s);
+				Debug.WriteLine(getHead() + s);
 		}
 
 		public static void ERROR_MSG(object s)
 		{
 			if (DEBUGLEVEL.ERROR >= debugLevel)
-				Debug.LogError(getHead() + s);
+				Debug.WriteLine(getHead() + s);
 		}
 
 		public static void profileStart(string name)

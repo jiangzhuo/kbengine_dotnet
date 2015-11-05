@@ -1,15 +1,16 @@
 ﻿namespace KBEngine
 {
-  	using UnityEngine; 
-	using System; 
-	using System.Net; 
-	using System.Collections; 
-	using System.Collections.Generic;
-	using System.Text;
-    using System.Threading; 
-	using System.Runtime.InteropServices;
-	
-	/*
+    //using UnityEngine; 
+    using System;
+    using System.Net;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Threading;
+    using System.Runtime.InteropServices;
+    using System.Numerics;
+
+    /*
 		二进制数据流模块
 		能够将一些基本类型序列化(writeXXX)成二进制流同时也提供了反序列化(readXXX)等操作
 	*/

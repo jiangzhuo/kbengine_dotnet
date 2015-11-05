@@ -1,11 +1,12 @@
 ﻿namespace KBEngine
 {
-  	using UnityEngine; 
-	using System; 
-	using System.Collections; 
-	using System.Collections.Generic;
-	
-	/*
+    //using UnityEngine;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Numerics;
+
+    /*
 		KBEngine逻辑层的实体基础类
 		所有扩展出的游戏实体都应该继承于该模块
 	*/
@@ -316,9 +317,9 @@
 		{
 			Vector3 v = (Vector3)getDefinedPropterty("direction");
 			
-			v.x = v.x * 360 / ((float)System.Math.PI * 2);
-			v.y = v.y * 360 / ((float)System.Math.PI * 2);
-			v.z = v.z * 360 / ((float)System.Math.PI * 2);
+			v.X = v.X * 360 / ((float)System.Math.PI * 2);
+			v.Y = v.X * 360 / ((float)System.Math.PI * 2);
+			v.Z = v.Z * 360 / ((float)System.Math.PI * 2);
 			
 			direction = v;
 			

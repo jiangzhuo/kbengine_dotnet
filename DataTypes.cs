@@ -1,17 +1,17 @@
 ﻿namespace KBEngine
 {
-  	using UnityEngine; 
-	using System; 
-	using System.Collections; 
-	using System.Collections.Generic;
-	
-	using MessageID = System.UInt16;
-	
-	/*
+    //using UnityEngine; 
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Numerics;
+    using MessageID = System.UInt16;
+
+    /*
 		entitydef所支持的基本数据类型
 		改模块中的类抽象出了所有的支持类型并提供了这些类型的数据序列化成二进制数据与反序列化操作（主要用于网络通讯的打包与解包）
 	*/
-	public class KBEDATATYPE_BASE
+    public class KBEDATATYPE_BASE
 	{
 		public static bool isNumeric(object v)
 		{
@@ -381,8 +381,8 @@
 		public override void addToStream(Bundle stream, object v)
 		{
 			stream.writeUint32(2);
-			stream.writeFloat(((Vector2)v).x);
-			stream.writeFloat(((Vector2)v).y);
+			stream.writeFloat(((Vector2)v).X);
+			stream.writeFloat(((Vector2)v).Y);
 		}
 		
 		public override object parseDefaultValStr(string v)
@@ -412,9 +412,9 @@
 		public override void addToStream(Bundle stream, object v)
 		{
 			stream.writeUint32(3);
-			stream.writeFloat(((Vector3)v).x);
-			stream.writeFloat(((Vector3)v).y);
-			stream.writeFloat(((Vector3)v).z);
+			stream.writeFloat(((Vector3)v).X);
+			stream.writeFloat(((Vector3)v).Y);
+			stream.writeFloat(((Vector3)v).Z);
 		}
 		
 		public override object parseDefaultValStr(string v)
@@ -444,10 +444,10 @@
 		public override void addToStream(Bundle stream, object v)
 		{
 			stream.writeUint32(4);
-			stream.writeFloat(((Vector4)v).x);
-			stream.writeFloat(((Vector4)v).y);
-			stream.writeFloat(((Vector4)v).z);
-			stream.writeFloat(((Vector4)v).w);
+			stream.writeFloat(((Vector4)v).X);
+			stream.writeFloat(((Vector4)v).Y);
+			stream.writeFloat(((Vector4)v).Z);
+			stream.writeFloat(((Vector4)v).W);
 		}
 		
 		public override object parseDefaultValStr(string v)

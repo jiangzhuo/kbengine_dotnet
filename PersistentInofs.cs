@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿//using UnityEngine;
 using KBEngine;
-using System; 
-using System.IO;  
+using System;
+using System.IO;
 using System.Text;
 using System.Collections;
+using System.Diagnostics;
 
 namespace KBEngine
 {
@@ -193,7 +194,7 @@ namespace KBEngine
 			}
 			catch (Exception e)
 			{
-				Debug.LogError(e.ToString());
+				Debug.WriteLine(e.ToString());
 			}
 	   }  
 	}
